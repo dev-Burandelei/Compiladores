@@ -37,6 +37,7 @@ class UCyanLexer(Lexer):
         "RPAREN",
         "LBRACE",
         "RBRACE",
+        "UNCOMMENT",
         # Constants
         "FLOAT_CONST",
         "INT_CONST",
@@ -48,9 +49,9 @@ class UCyanLexer(Lexer):
         "TIMES",
         "DIVIDE",
         "LT",
-        "OpRelMenorIgual",
+        "LE",
         "GT",
-        "OpRelMaiorIgual",
+        "GE",
         "OpRelDif",
         "AND",
         "OpLogOu",
@@ -59,7 +60,6 @@ class UCyanLexer(Lexer):
         "OpUnarySub",
         "OPUnaryDif",
         # Assignment
-        "UNCOMMENT",
         "EQUALS",
     )
 
@@ -71,6 +71,7 @@ class UCyanLexer(Lexer):
     #ignore_uncomment = r'\/\*.*?\*\/'
     ignore_multiline = r'\/\*(.|\n)*?\*\/'
     ignore_comment = r'\/\/.*'
+    UNCOMMENT = r'\/\*(.|\n)*'
 
     # Delimitadores
     LPAREN = r'\('
@@ -89,8 +90,8 @@ class UCyanLexer(Lexer):
     AND = r'\&\&'
     EQ = r'=='
     OpRelDif = r'<>'
-    OpRelMenorIgual = r'<='
-    OpRelMaiorIgual = r'>='
+    LE = r'<='
+    GE = r'>='
     PLUS = r'\+'
     MINUS = r'-'
     TIMES = r'\*'
@@ -103,12 +104,16 @@ class UCyanLexer(Lexer):
     OpUnarySub = r'-'
     OPUnaryDif = r'!'  # Assuming this is a unary difference operator
 
-    UNCOMMENT = r'\/\*(?:[^*]|\*(?!\/))*\*\/'
 
 
 
     EQUALS = r'='
 
+    #Erro de comentario
+    def UNCOMMENT(self, t):
+        msg = "Unterminated comment"
+        self._error(msg, t)
+        
     # Special cases
     def ID(self, t):
         t.type = self.keywords.get(t.value, "ID")
@@ -173,3 +178,5 @@ class UCyanLexer(Lexer):
     # Define uma função de tratamento de erro
     def error_func(msg, line, column):
         print(f"Erro na linha {line}, coluna {column}: {msg}")
+
+

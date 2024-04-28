@@ -19,10 +19,10 @@ class UCyanLexer(Lexer):
         'break': "BREAK",
         'continue': "CONTINUE",
         'let': "LET",
-        'var' : "VAR",
-        'int' : "ID",
-        'float' : "ID",
-        'char' : "ID",
+        'var': "VAR",
+        'int': "ID",
+        'float': "ID",
+        'char': "ID",
         'true': "TRUE",
         'false': "OpLogFalse",
     }
@@ -41,7 +41,7 @@ class UCyanLexer(Lexer):
         "FLOAT_CONST",
         "INT_CONST",
         "CHAR_CONST",
-        # Operators 
+        # Operators
         "EQ",
         "PLUS",
         "MINUS",
@@ -59,17 +59,20 @@ class UCyanLexer(Lexer):
         "OpUnarySub",
         "OPUnaryDif",
         # Assignment
+        "UNCOMMENT",
         "EQUALS",
     )
 
     # String containing ignored characters (between tokens)
     ignore = " \t"
 
-   # Other ignored patterns
+    # Other ignored patterns
     ignore_newline = r'\n+'
-    ignore_comment = r'\/\*.*?\*\/|\/\/.*'
+    #ignore_uncomment = r'\/\*.*?\*\/'
+    ignore_multiline = r'\/\*(.|\n)*?\*\/'
+    ignore_comment = r'\/\/.*'
 
-    #Delimitadores
+    # Delimitadores
     LPAREN = r'\('
     RPAREN = r'\)'
     LBRACE = r'\{|\['
@@ -80,10 +83,10 @@ class UCyanLexer(Lexer):
     ID = r'[a-zA-Z][a-zA-Z0-9]*'
     FLOAT_CONST = r'\d+\.\d+'
     INT_CONST = r'\d+'
-    CHAR_CONST =  r'\'([^\\\n]|(\\.))*?\''
-    
+    CHAR_CONST = r'\'([^\\\n]|(\\.))*?\''
+
     # Binary operators
-    AND =r'\&\&'
+    AND = r'\&\&'
     EQ = r'=='
     OpRelDif = r'<>'
     OpRelMenorIgual = r'<='
@@ -92,37 +95,48 @@ class UCyanLexer(Lexer):
     MINUS = r'-'
     TIMES = r'\*'
     DIVIDE = r'\/'
-    LT= r'<'
+    LT = r'<'
     GT = r'>'
-    
+
     # Unary operators
     OpUnarySoma = r'\+'
     OpUnarySub = r'-'
     OPUnaryDif = r'!'  # Assuming this is a unary difference operator
 
+    UNCOMMENT = r'\/\*(?:[^*]|\*(?!\/))*\*\/'
+
+
 
     EQUALS = r'='
-    # <<< YOUR CODE HERE >>>
 
     # Special cases
     def ID(self, t):
-      t.type = self.keywords.get(t.value, "ID")
-      return t  
-    
-    def INT_CONST(self, t):
-        #t.value = int(t.value)
+        t.type = self.keywords.get(t.value, "ID")
         return t
-    
+
+    def INT_CONST(self, t):
+        # t.value = int(t.value)
+        return t
+
     def FLOAT_CONST(self, t):
-        #t.value = float(t.value)  # Convert to float
+        # t.value = float(t.value)  # Convert to float
         return t
 
     # Define a rule so we can track line numbers
     def ignore_newline(self, t):
-      self.lineno += len(t.value)
- 
+        self.lineno += len(t.value)
+
     def ignore_comment(self, t):
+        self.lineno += t.value.count("\n")
+
+    def ignore_multiline(self, t):
       self.lineno += t.value.count("\n")
+
+    #def UNCOMMENT(self, t):
+        #self.lineno += t.value.count("\n")
+
+    #def ignore_line_comment(self, t):
+        #pass  # No action needed for line comments
 
     def find_column(self, token):
         """Find the column of the token in its line."""
@@ -151,11 +165,11 @@ class UCyanLexer(Lexer):
     def scan(self, text):
         output = ""
         for tok in self.tokenize(text):
-            if tok.type != 'COMMENT':  # Ignore comment tokens
+            if tok.type not in ('COMMENT', 'UNCOMMENT', 'LINE_COMMENT'):
                 print(tok)
                 output += str(tok) + "\n"
         return output
-    
+
     # Define uma função de tratamento de erro
     def error_func(msg, line, column):
         print(f"Erro na linha {line}, coluna {column}: {msg}")

@@ -37,11 +37,11 @@ class UCyanLexer(Lexer):
         "FLOAT_CONST",
         "CHAR_CONST",
         # Operators 
-        "OpAritSoma",
+        "PLUS",
         "OpAritSub",
-        "OpAritMult",
+        "TIMES",
         "OpAritDiv",
-        "OpRelMenor",
+        "LT",
         "OpRelMenorIgual",
         "OpRelMaior",
         "OpRelMaiorIgual",
@@ -55,9 +55,9 @@ class UCyanLexer(Lexer):
         # Assignment
         "EQUALS",
         # Delimeters
-        "Delim",
-        "AbrePar",
-        "FechaPar",
+        "SEMI",
+        "LBRACE",
+        "RBRACE",
     )
 
     # String containing ignored characters (between tokens)
@@ -77,11 +77,11 @@ class UCyanLexer(Lexer):
     OpRelDif = r'<>'
     OpRelMenorIgual = r'<='
     OpRelMaiorIgual = r'>='
-    OpAritSoma = r'\+'
+    PLUS = r'\+'
     OpAritSub = r'-'
-    OpAritMult = r'\*'
+    TIMES = r'\*'
     OpAritDiv = r'\/'
-    OpRelMenor = r'<'
+    LT= r'<'
     OpRelMaior = r'>'
     
     # Unary operators
@@ -89,9 +89,9 @@ class UCyanLexer(Lexer):
     OpUnarySub = r'-'
     OPUnaryDif = r'!'  # Assuming this is a unary difference operator
 
-    Delim = r':'
-    AbrePar = r'\('
-    FechaPar = r'\)'
+    SEMI = r';|:'
+    LBRACE = r'\(|\{|\['
+    RBRACE = r'\)|\}|\]'
 
     EQUALS = r'='
     # <<< YOUR CODE HERE >>>
@@ -102,11 +102,11 @@ class UCyanLexer(Lexer):
       return t  
     
     def INT_CONST(self, t):
-        t.value = int(t.value)
+        #t.value = int(t.value)
         return t
     
     def FLOAT_CONST(self, t):
-        t.value = float(t.value)  # Convert to float
+        #t.value = float(t.value)  # Convert to float
         return t
 
     # Define a rule so we can track line numbers

@@ -129,7 +129,7 @@ class UCyanLexer(Lexer):
         last_cr = self.text.rfind('\n', 0, token.index)
         if last_cr < 0:
             last_cr = 0
-        column = (token.index - last_cr) + 1
+        column = (token.index - last_cr)
         return column
 
     # Internal auxiliary methods

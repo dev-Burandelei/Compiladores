@@ -15,7 +15,6 @@ class UCyanLexer(Lexer):
         'print': "PRINT",
         'if': "IF",
         'else': "ELSE",
-        '=': "EQUALS",
         'while': "WHILE",
         'break': "BREAK",
         'continue': "CONTINUE",
@@ -24,7 +23,7 @@ class UCyanLexer(Lexer):
         'int' : "ID",
         'float' : "ID",
         'char' : "ID",
-        'true': "OpLogTrue",
+        'true': "TRUE",
         'false': "OpLogFalse",
     }
 
@@ -32,21 +31,28 @@ class UCyanLexer(Lexer):
     tokens = tuple(keywords.values()) + (
         # Identifiers
         "ID",
+        # Delimeters
+        "SEMI",
+        "LPAREN",
+        "RPAREN",
+        "LBRACE",
+        "RBRACE",
         # Constants
-        "INT_CONST",
         "FLOAT_CONST",
+        "INT_CONST",
         "CHAR_CONST",
         # Operators 
+        "EQ",
         "PLUS",
-        "OpAritSub",
+        "MINUS",
         "TIMES",
-        "OpAritDiv",
+        "DIVIDE",
         "LT",
         "OpRelMenorIgual",
-        "OpRelMaior",
+        "GT",
         "OpRelMaiorIgual",
         "OpRelDif",
-        "OpLogE",
+        "AND",
         "OpLogOu",
         # Unitary Operators
         "OpUnarySoma",
@@ -54,10 +60,6 @@ class UCyanLexer(Lexer):
         "OPUnaryDif",
         # Assignment
         "EQUALS",
-        # Delimeters
-        "SEMI",
-        "LBRACE",
-        "RBRACE",
     )
 
     # String containing ignored characters (between tokens)
@@ -65,33 +67,39 @@ class UCyanLexer(Lexer):
 
    # Other ignored patterns
     ignore_newline = r'\n+'
-    ignore_comment = r'\/\*.*?\*\/'
+    ignore_comment = r'\/\*.*?\*\/|\/\/.*'
+
+    #Delimitadores
+    LPAREN = r'\('
+    RPAREN = r'\)'
+    LBRACE = r'\{|\['
+    RBRACE = r'\}|\]'
+    SEMI = r';|:'
 
     # Regular expression rules for tokens
     ID = r'[a-zA-Z][a-zA-Z0-9]*'
-    INT_CONST = r'\d+'
     FLOAT_CONST = r'\d+\.\d+'
+    INT_CONST = r'\d+'
     CHAR_CONST =  r'\'([^\\\n]|(\\.))*?\''
     
     # Binary operators
+    AND =r'\&\&'
+    EQ = r'=='
     OpRelDif = r'<>'
     OpRelMenorIgual = r'<='
     OpRelMaiorIgual = r'>='
     PLUS = r'\+'
-    OpAritSub = r'-'
+    MINUS = r'-'
     TIMES = r'\*'
-    OpAritDiv = r'\/'
+    DIVIDE = r'\/'
     LT= r'<'
-    OpRelMaior = r'>'
+    GT = r'>'
     
     # Unary operators
     OpUnarySoma = r'\+'
     OpUnarySub = r'-'
     OPUnaryDif = r'!'  # Assuming this is a unary difference operator
 
-    SEMI = r';|:'
-    LBRACE = r'\(|\{|\['
-    RBRACE = r'\)|\}|\]'
 
     EQUALS = r'='
     # <<< YOUR CODE HERE >>>

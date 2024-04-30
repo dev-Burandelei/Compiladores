@@ -1,3 +1,7 @@
+import sys
+sys.path.insert(0, 'sly.zip')
+from sly import Lexer
+
 class UCyanLexer(Lexer):
     """A lexer for the uCyan language."""
 
@@ -37,6 +41,7 @@ class UCyanLexer(Lexer):
         "RPAREN",
         "LBRACE",
         "RBRACE",
+
         "UNCOMMENT",
         # Constants
         "FLOAT_CONST",
@@ -61,6 +66,7 @@ class UCyanLexer(Lexer):
         "OPUnaryDif",
         # Assignment
         "EQUALS",
+        "error_char"
     )
 
     # String containing ignored characters (between tokens)
@@ -85,7 +91,9 @@ class UCyanLexer(Lexer):
     FLOAT_CONST = r'\d+\.\d+'
     INT_CONST = r'\d+'
     CHAR_CONST = r'\'([^\\\n]|(\\.))*?\''
+    
 
+    error_char = r'\'.*'
     # Binary operators
     AND = r'\&\&'
     EQ = r'=='
@@ -109,23 +117,27 @@ class UCyanLexer(Lexer):
 
     EQUALS = r'='
 
+    #Erro de de String n fechada
+    #def UNSTRING(self, t):
+     #   msg = "Unterminated string"
+      #  self._error(msg, t)    
+    
+    #erro de char não fechado
+    def error_char(self, t):
+        msg = "Unterminated char"
+        self._error(msg, t)
+
     #Erro de comentario
     def UNCOMMENT(self, t):
         msg = "Unterminated comment"
         self._error(msg, t)
+
         
     # Special cases
     def ID(self, t):
         t.type = self.keywords.get(t.value, "ID")
         return t
 
-    def INT_CONST(self, t):
-        # t.value = int(t.value)
-        return t
-
-    def FLOAT_CONST(self, t):
-        # t.value = float(t.value)  # Convert to float
-        return t
 
     # Define a rule so we can track line numbers
     def ignore_newline(self, t):
@@ -136,6 +148,8 @@ class UCyanLexer(Lexer):
 
     def ignore_multiline(self, t):
       self.lineno += t.value.count("\n")
+
+      
 
     #def UNCOMMENT(self, t):
         #self.lineno += t.value.count("\n")
@@ -155,7 +169,6 @@ class UCyanLexer(Lexer):
     def _error(self, msg, token):
         location = self._make_location(token)
         self.error_func(msg, location[0], location[1])
-        self.index += 1
 
     def _make_location(self, token):
         return token.lineno, self.find_column(token)
@@ -164,7 +177,6 @@ class UCyanLexer(Lexer):
     def error(self, t):
         msg = "Illegal character %s" % repr(t.value[0])
         self._error(msg, t)
-        self.index += 1
 
     # Scanner (used only for test)
     def scan(self, text):
